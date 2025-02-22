@@ -154,8 +154,8 @@
 
     <script>
         const firebaseConfig = {
-            apiKey: "YOUR_FIREBASE_API_KEY",
-            authDomain: "YOUR_PROJECT.firebaseapp.com"
+            apiKey: "AIzaSyCrXRkRPhdlxyc1JnKFZJVizctFGbocvz4",
+            authDomain: "wsalitlak-12.firebaseapp.com"
         };
         firebase.initializeApp(firebaseConfig);
 
@@ -164,47 +164,35 @@
         }
 
         function sendOTP() {
-            let phoneNumber = "+964" + document.getElementById("phoneNumber").value;
-            let appVerifier = new firebase.auth.RecaptchaVerifier('sendOTP');
+    let phoneNumber = "+964" + document.getElementById("phoneNumber").value;
+    let appVerifier = new firebase.auth.RecaptchaVerifier('sendOTP');
 
-            let button = document.getElementById("sendOTP");
-            button.disabled = true;
-            button.innerText = "جاري الإرسال...";
-            button.style.opacity = "0.6";
+    firebase.auth().signInWithPhoneNumber(phoneNumber, appVerifier)
+        .then(confirmationResult => {
+            window.confirmationResult = confirmationResult;
+            alert("تم إرسال الرمز بنجاح!");
+        })
+        .catch(error => {
+            console.error("خطأ في إرسال الرمز:", error);
+            alert("حدث خطأ أثناء إرسال الرمز. تأكد من الرقم وحاول مرة أخرى.");
+        });
+}
 
-            firebase.auth().signInWithPhoneNumber(phoneNumber, appVerifier)
-                .then(confirmationResult => {
-                    window.confirmationResult = confirmationResult;
-                    alert("تم إرسال الرمز بنجاح!");
-                    startResendTimer(); // بدء العد التنازلي لإعادة الإرسال
-                })
-                .catch(error => {
-                    console.log(error);
-                    button.disabled = false;
-                    button.innerText = "إرسال رمز التحقق";
-                    button.style.opacity = "1";
-                });
-        }
 
         function verifyOTP() {
-            let code = document.getElementById("verificationCode").value;
+    let code = document.getElementById("verificationCode").value;
+    
+    confirmationResult.confirm(code)
+        .then(result => {
+            let user = result.user;
+            alert("تم التحقق بنجاح! معرف المستخدم: " + user.uid);
+        })
+        .catch(error => {
+            console.error("خطأ في التحقق:", error);
+            alert("رمز التحقق غير صحيح، حاول مرة أخرى.");
+        });
+}
 
-            let button = document.getElementById("verifyOTP");
-            button.disabled = true;
-            button.innerText = "جاري التحقق...";
-            button.style.opacity = "0.6";
-
-            confirmationResult.confirm(code)
-                .then(result => {
-                    alert("تم التحقق بنجاح!");
-                })
-                .catch(error => {
-                    console.log(error);
-                    button.disabled = false;
-                    button.innerText = "تحقق";
-                    button.style.opacity = "1";
-                });
-        }
 
         function startResendTimer() {
             let button = document.getElementById("sendOTP");
