@@ -16,9 +16,10 @@
     <div class="container">
         <h2>التحقق من رقم الهاتف</h2>
         
-        <!-- Step 1: Enter Phone Number -->
+        <!-- Step 1: Enter Phone Number and Custom Code -->
         <div id="phone-section">
-            <input type="tel" id="phone" placeholder="+9665XXXXXXXX">
+            <input type="tel" id="phone" placeholder="+9647XXXXXXXXX">
+            <input type="text" id="custom-code" placeholder="أدخل الرمز الخاص">
             <button onclick="sendOTP()">إرسال الرمز</button>
         </div>
 
@@ -57,8 +58,16 @@
         // Send OTP
         function sendOTP() {
             const phone = document.getElementById('phone').value;
+            const customCode = document.getElementById('custom-code').value;
+
+            // تحقق من صحة الرمز الخاص (مثال: يجب أن يكون طوله 4 أرقام)
+            if (customCode.length !== 6 || !/^\d+$/.test(customCode)) {
+                showStatus("الرمز خاص يجب أن يكون 6 أرقام!", "red");
+                return;
+            }
+
             recaptchaVerifier = new firebase.auth.RecaptchaVerifier('recaptcha-container', {
-                'size': 'normal', // أو 'normal' إذا أردت ظهور reCAPTCHA
+                'size': 'invisible', // أو 'normal' إذا أردت ظهور reCAPTCHA
                 'callback': () => console.log("reCAPTCHA solved!")
             });
 
