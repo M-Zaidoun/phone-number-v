@@ -58,7 +58,7 @@
         function sendOTP() {
             const phone = document.getElementById('phone').value;
             recaptchaVerifier = new firebase.auth.RecaptchaVerifier('recaptcha-container', {
-                'size': 'invisible', // أو 'normal' إذا أردت ظهور reCAPTCHA
+                'size': 'normal', // أو 'normal' إذا أردت ظهور reCAPTCHA
                 'callback': () => console.log("reCAPTCHA solved!")
             });
 
